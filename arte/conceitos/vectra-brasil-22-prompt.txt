@@ -1,0 +1,17 @@
+Ferramenta: image_gen integrada (imagegen), com fundo transparente.
+Referências: sprites/carros/civic_frente34.png e sprites/carros/golf_lado.png.
+Saída original: arte/conceitos/vectra-brasil-22-sheet.png.
+Sprites finais: sprites/carros/vectra_{tras,tras34,lado,frente34,frente}{,_g1,_g2}.png.
+Integração: recorte por célula e limites de alpha > 128; largura de 128 px,
+redimensionamento por vizinho mais próximo. Assim como o Golf e o Palio,
+os três quadros usam a mesma arte, compatível com o carregador existente.
+Ajuste posterior solicitado: vista traseira compactada de 128x107 para 128x89,
+nos três quadros, com vizinho mais próximo. Originais no backup
+.codex/backups/antes-vectra-traseira-20261104/.
+
+Prompt completo:
+Use case: stylized-concept. Asset type: production sprite sheet for existing retro racing game Vermes Kart.
+Reference images are style and proportions references only: existing small pixel car sprites, dark outlined, squat compact sedans, chunky visible pixels, no antialiasing, no environment.
+Create ONE transparent sprite sheet with exactly FIVE isolated views of the SAME Brazilian Chevrolet Vectra Elegance 2010 sedan, 2.0 MPFI 8V Flexpower manual. Recognizable 2006–2011 Brazilian Vectra notchback sedan shape, Chevrolet gold bowtie grille, swept angular headlamps, four doors, trunk, silver alloy wheels. Car body remains complete but roof is open/cut away like the reference to allow the game to composite driver heads; do not draw any driver or character.
+Livery: Brazilian flag colors: vivid green main body, yellow diagonal panels/stripes, royal blue rocker panels and hood accents, white details. Large legible white racing number "22" on both visible doors and on hood and trunk. Consistent paint across every angle.
+Composition: landscape 1536x1024 canvas, a regular grid of 3 columns and 2 rows, each cell 512x512. Center each sprite in its cell, same vehicle scale, leave generous transparent margin, no overlaps. Top left: straight REAR view; top middle: REAR THREE QUARTERS view with nose pointing RIGHT; top right: exact SIDE profile nose pointing RIGHT. Bottom left: FRONT THREE QUARTERS view with nose pointing RIGHT; bottom middle: straight FRONT view. Bottom right EMPTY. All five cars must be facing the specified directions, same camera elevation slightly above body to show hood/trunk, matching references. Side profile is long and low like reference. Keep number 22 upright and legible. No labels, no grids, no captions, no ground shadow, no text outside car, no watermark. Actual alpha transparent background. Pixel art game asset, not realistic illustration.

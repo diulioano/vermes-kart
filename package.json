@@ -1,0 +1,18 @@
+{
+  "name": "vermes-kart",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node tools/serve.mjs",
+    "check": "node --check assets/jogo.js && node --check assets/convite.js && node --check assets/cercas.js && node --check assets/bandeira.js && node --check assets/cidreira/track.js && node --check assets/cidreira/physics.js && node --check assets/cidreira/scene.js && node --check assets/cidreira/index.js && node --check assets/cidreira/traffic.js && node --check assets/cidreira/sprites.js && node --check assets/cidreira/water.js",
+    "test": "node --test tools/traffic.test.mjs && node tools/smoke-cidreira.cjs",
+    "test:vectra": "node tools/smoke-vectra.cjs",
+    "test:convite": "node tools/smoke-convite.cjs",
+    "test:cercas": "node --test tools/cercas.test.mjs && node tools/smoke-cercas.cjs",
+    "test:bandeira": "node --test tools/bandeira.test.mjs && node tools/smoke-bandeira.cjs",
+    "test:bandeira:online": "node tools/smoke-bandeira-online.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.61.1"
+  }
+}

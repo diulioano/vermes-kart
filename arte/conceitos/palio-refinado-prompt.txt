@@ -1,0 +1,12 @@
+Ferramenta: image_gen integrada, fundo transparente.
+Recriação do Palio branco com referências de acabamento do HB20 e Civic.
+Saída: palio-refinado-sheet.png. Sprites finais: sprites/carros/palio_*.png.
+Integração: cinco células recortadas por alpha > 128; vizinho mais próximo;
+dimensões originais preservadas. Os três quadros repetem a arte, como antes.
+Originais: .codex/backups/antes-clio-palio-20261104/.
+
+Prompt completo:
+Use case: style-transfer. Asset type: transparent production sprite sheet for retro racing game Vermes Kart.
+Images 1-3 are the existing white Fiat Palio to REBUILD with higher quality; preserve its recognizable early Brazilian Fiat Palio hatchback body, white paint, stock rectangular headlamps, narrow grille with red Fiat badge, black side moldings, vertical red rear lamps, compact hatchback proportions. Images 4-5 (black HB20 and Civic) are STYLE REFERENCES for quality, perspective, dark outlines and shaded material rendering. Do not copy their body design.
+Redraw the Palio to match those other game cars: refined clean pixel art, strong consistent dark outlines, controlled detailed shading of white metal in white/light gray and cool gray shadows, crisp readable headlights and taillights, convincing rubber tires, silver alloy wheels with five spokes, coherent body perspective. Remove all magenta edge contamination and jagged broken silhouettes present in old Palio. NOT photorealistic or glossy 3D. Squat cartoon racing proportions and small chunky pixels consistent with the game. Open/cut-away roof like the existing game vehicles with dark seats; no driver or character, engine overlays driver heads. Keep front windshield frame.
+Create exactly FIVE views of the SAME white Palio on a 1536x1024 transparent canvas. Regular grid of 3 columns x 2 rows, each cell 512x512, sprite centered and fully contained with generous transparent margin. Top left REAR straight on, top middle REAR THREE QUARTERS nose pointing RIGHT, top right exact SIDE profile nose pointing RIGHT. Bottom left FRONT THREE QUARTERS nose pointing RIGHT, bottom middle FRONT straight on. Bottom right empty. Same slightly elevated camera, body details and wheel design in all five views. No racing livery, no numbers, no text or labels, no grids, no ground shadow, no scenery. Actual transparent alpha.

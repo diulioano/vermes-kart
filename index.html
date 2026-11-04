@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vermes Kart">
+<title>Vermes Kart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap">
+<style>
+  /* Paleta do pôr do sol da tela de título: ameixa escuro, vinho, pêssego e laranja,
+     com o amarelo e o vermelho do logo como destaque. Tudo em fonte pixel. */
+  :root {
+    --fundo: #1c0f24;
+    --painel: #2e1733;
+    --painel-alto: #4a2142;
+    --linha: #6e3150;
+    --texto: #fff0dc;
+    --apagado: #d7a59a;
+    --ficha: #ffcf4a;
+    --laranja: #ff7a2f;
+    --zebra: #d8262b;
+    --titulo: 'Press Start 2P', 'Courier New', monospace;
+    --corpo: 'VT323', 'Courier New', monospace;
+    color-scheme: dark;
+  }
+  html, body { height: 100%; margin: 0; overflow: hidden; background: var(--fundo); color: var(--texto); font-family: var(--corpo); font-size: 20px; }
+  #tela, #linhas { position: fixed; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; display: block; }
+  #linhas { pointer-events: none; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  button:focus-visible { outline: 3px solid var(--ficha); outline-offset: 2px; }
+
+  #menu { position: fixed; inset: 0; overflow-y: auto; background: color-mix(in srgb, var(--fundo) 82%, transparent);
+    padding-block: max(20px, env(safe-area-inset-top)) 24px;
+    padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+  .miolo { max-width: 1040px; margin: 0 auto; display: grid; gap: 18px; }
+  h1 { font-family: var(--titulo); font-size: clamp(22px, 5vw, 44px); margin: 0; color: var(--ficha);
+    text-shadow: 4px 4px 0 var(--zebra); letter-spacing: 2px; text-wrap: balance; }
+  h2 { font-family: var(--titulo); font-size: 12px; letter-spacing: 2px; color: var(--apagado); margin: 0 0 8px; }
+  .topo { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; justify-content: space-between; }
+  .passos { list-style: none; margin: 0; padding: 0; display: flex; gap: 6px; font-family: var(--titulo); font-size: 11px; }
+  .passos li { padding: 8px 10px; border: 3px solid var(--linha); color: var(--apagado); background: var(--fundo); }
+  .passos li[aria-current="true"] { border-color: var(--ficha); color: var(--fundo); background: var(--ficha); box-shadow: 3px 3px 0 var(--zebra); }
+  .escolha { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 380px); gap: 16px; align-items: start; }
+  @media (max-width: 760px) { .escolha { grid-template-columns: minmax(0, 1fr); } .vitrine { order: -1; } }
+  .lista { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .card { border: 3px solid var(--linha); padding: 10px 6px; display: grid; justify-items: center; gap: 4px; min-width: 0;
+    box-shadow: inset 0 3px 0 color-mix(in srgb, var(--laranja) 30%, transparent), 3px 3px 0 rgba(0,0,0,.35); }
+  .card img { height: 72px; image-rendering: pixelated; object-fit: contain; max-width: 100%; }
+  .card.carro img { height: 56px; }
+  .card b { font-family: var(--titulo); font-size: 10px; text-align: center; }
+  .card small { font-size: 16px; color: var(--apagado); }
+  .card:hover { border-color: var(--laranja); }
+  .card[aria-pressed="true"] { border-color: var(--ficha); background: linear-gradient(180deg, var(--painel-alto), var(--painel));
+    box-shadow: inset 0 3px 0 var(--laranja), 0 0 0 3px color-mix(in srgb, var(--laranja) 45%, transparent), 3px 3px 0 rgba(0,0,0,.35); }
+  .vitrine { background: color-mix(in srgb, var(--painel) 90%, transparent); border: 3px solid var(--linha); padding: 14px; display: grid; gap: 10px;
+    box-shadow: inset 0 4px 0 var(--laranja), 4px 4px 0 rgba(0,0,0,.4); }
+  /* mini-cenário da prévia: céu de pôr do sol e um pedaço de asfalto */
+  #previa { width: 100%; height: 220px; display: block; border: 3px solid var(--fundo);
+    background:
+      repeating-linear-gradient(90deg, transparent 0 22px, rgba(255,240,220,.55) 22px 36px) 0 86% / 100% 3px no-repeat,
+      linear-gradient(180deg, #ffb35a 0%, #ff7a3d 26%, #d94a52 46%, #7d2d5f 64%, #4a2142 72%, #2b2030 72%, #1f1824 100%); }
+  .vitrine h2 { color: var(--texto); font-size: 13px; margin: 0; }
+  #pv-info { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; font-size: 20px; color: var(--apagado); min-height: 24px; }
+  #pv-info .b { float: none; justify-self: end; font-size: 14px; }
+  #menu { padding-bottom: calc(96px + env(safe-area-inset-bottom)); background-color: var(--fundo);
+    background-size: cover; background-position: center 35%; image-rendering: pixelated; }
+  .logo { line-height: 0; }
+  .logo img { width: min(520px, 100%); height: auto; image-rendering: pixelated; filter: drop-shadow(0 4px 0 rgba(0,0,0,.45)); }
+  .lista .card, .vitrine, .teclas { backdrop-filter: blur(2px); }
+  .card { background: color-mix(in srgb, var(--painel) 88%, transparent); }
+  .rodape-fixo { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; display: flex; gap: 10px;
+    background: linear-gradient(180deg, var(--painel), var(--fundo)); border-top: 3px solid var(--laranja);
+    padding-top: 12px; padding-bottom: max(12px, env(safe-area-inset-bottom));
+    padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+  .rodape-fixo .grande { flex: 1 1 0; min-width: 0; font-size: clamp(9px, 2.5vw, 14px); padding: 18px 8px; white-space: nowrap; }
+  .rodape-fixo #voltar { flex: 0 1 34%; }
+  .b { font-style: normal; color: var(--ficha); letter-spacing: -1px; }
+  .b span { color: var(--linha); }
+  .coluna { display: grid; gap: 12px; min-width: 0; }
+  .teclas { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px 20px;
+    background: color-mix(in srgb, var(--painel) 90%, transparent); border: 3px solid var(--linha); padding: 12px 14px; box-shadow: 3px 3px 0 rgba(0,0,0,.35); }
+  .teclas h3 { font-family: var(--titulo); font-size: 10px; letter-spacing: 2px; color: var(--ficha); margin: 0 0 8px; }
+  .teclas dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; align-items: center; }
+  .teclas dt { display: flex; gap: 3px; }
+  .teclas dd { margin: 0; color: var(--texto); font-size: 18px; line-height: 1.1; }
+  @media (hover: none) and (pointer: coarse) { .teclas { display: none; } }
+  kbd { font-family: var(--titulo); font-size: 9px; border: 2px solid var(--linha); border-bottom-width: 4px; padding: 2px 4px; color: var(--texto); background: var(--fundo); }
+  kbd.seta { font-family: var(--corpo); font-size: 16px; padding: 0 5px; }
+  .grande { font-family: var(--titulo); font-size: 16px; background: var(--ficha); color: var(--fundo); border: 0; padding: 14px 22px; box-shadow: 4px 4px 0 var(--zebra); }
+  .grande:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--zebra); }
+  .grande.leve { background: var(--fundo); color: var(--texto); box-shadow: 4px 4px 0 var(--linha); }
+
+  #hud { position: fixed; inset: 0; pointer-events: none; font-family: var(--titulo); text-shadow: 3px 3px 0 #000; }
+  #pos { position: absolute; left: max(16px, env(safe-area-inset-left)); bottom: max(16px, env(safe-area-inset-bottom)); font-size: clamp(48px, 7vw, 76px); color: var(--ficha); }
+  #pos sup { font-size: .4em; } #pos small { font-size: .36em; color: var(--texto); }
+  .cima { position: absolute; top: max(14px, env(safe-area-inset-top)); left: max(16px, env(safe-area-inset-left)); display: grid; gap: 8px; font-size: clamp(13px, 2.4vw, 22px); }
+  .cima #tempo { font-size: .75em; }
+  #vel { position: absolute; right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); font-size: 16px; }
+  #drift { position: absolute; left: 50%; bottom: 18%; transform: translateX(-50%); font-size: 14px; }
+  #drift[data-n="1"] { color: #4cc3ff; } #drift[data-n="2"] { color: #ff9a2e; } #drift[data-n="3"] { color: #ff4cd2; } #drift[data-n="turbo"] { color: var(--ficha); }
+  #item { position: absolute; left: 50%; top: max(14px, env(safe-area-inset-top)); transform: translateX(-50%); display: grid; justify-items: center; gap: 4px; }
+  #item .caixinha { width: 76px; height: 76px; display: grid; place-items: center; background: color-mix(in srgb, var(--fundo) 75%, transparent);
+    border: 3px solid var(--linha); box-shadow: inset 0 3px 0 var(--laranja), 3px 3px 0 rgba(0,0,0,.4); }
+  #item[data-estado="cheio"] .caixinha { border-color: var(--ficha); }
+  #item[data-estado="roleta"] .caixinha { border-color: var(--laranja); }
+  #item img { max-width: 60px; max-height: 60px; image-rendering: pixelated; }
+  #item img:not([src]) { visibility: hidden; }
+  #item-nome { font-size: 9px; color: var(--ficha); white-space: nowrap; }
+  #faixa { position: absolute; left: 50%; top: 32%; transform: translateX(-50%); font-size: clamp(16px, 4vw, 30px); color: var(--ficha);
+    text-shadow: 3px 3px 0 var(--zebra), 5px 5px 0 #000; white-space: nowrap; }
+  .mudo { font-family: var(--titulo); font-size: 9px; background: var(--fundo); color: var(--apagado); border: 3px solid var(--linha); padding: 8px 10px; margin-left: auto; }
+  .mudo[aria-pressed="true"] { color: var(--ficha); }
+  #minimapa { position: absolute; right: max(16px, env(safe-area-inset-right)); top: max(14px, env(safe-area-inset-top)); width: clamp(124px, 20vw, 250px); height: auto; aspect-ratio: 1; image-rendering: pixelated; }
+  /* Touch controls: only on phones/tablets (html.toque). */
+  html.toque, html.toque body, html.toque canvas, html.toque button, html.toque #hud { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  #toque { --tq-vol-h: clamp(92px, 27vh, 150px); --tq-bt: clamp(70px, 12vw, 100px); --tq-lin: clamp(52px, 15vh, 80px);
+    position: absolute; inset: 0; pointer-events: none; text-shadow: none; }
+  #toque button, .tq-volante { pointer-events: auto; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .tq-volante { position: absolute; left: max(12px, env(safe-area-inset-left)); bottom: max(12px, env(safe-area-inset-bottom));
+    width: clamp(196px, 34vw, 340px); height: var(--tq-vol-h); display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tq-volante span, #toque button { display: grid; place-items: center; color: var(--texto); background: color-mix(in srgb, var(--fundo) 55%, transparent);
+    border: 3px solid var(--linha); box-shadow: 3px 3px 0 rgba(0,0,0,.4); font-family: var(--titulo); font-size: 11px; padding: 0; }
+  .tq-volante span { font-size: 30px; font-family: var(--corpo); }
+  .tq-volante span.on, #toque button.on { background: color-mix(in srgb, var(--ficha) 75%, transparent); color: var(--fundo); transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(0,0,0,.4); }
+  .tq-botoes { position: absolute; right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); display: grid; gap: 10px;
+    grid-template-columns: var(--tq-bt) var(--tq-bt); grid-template-rows: 40px var(--tq-lin) var(--tq-lin); grid-template-areas: "tras drift" "item drift" "freio drift"; }
+  .tq-drift { grid-area: drift; border-color: var(--ficha) !important; color: var(--ficha) !important; font-size: 13px !important; }
+  .tq-drift.on { color: var(--fundo) !important; }
+  .tq-item { grid-area: item; } .tq-freio { grid-area: freio; } .tq-tras { grid-area: tras; font-size: 9px !important; }
+  .tq-topo { position: absolute; right: max(16px, env(safe-area-inset-right)); top: calc(max(14px, env(safe-area-inset-top)) + clamp(96px, min(20vw, 26vh), 250px) + 8px); display: flex; gap: 8px; }
+  .tq-topo button { width: 40px; height: 40px; font-size: 16px !important; font-family: var(--corpo) !important; }
+  html.toque #pos { bottom: calc(max(12px, env(safe-area-inset-bottom)) + var(--tq-vol-h, 120px) + 4px); font-size: clamp(34px, 6vw, 60px); }
+  html.toque #vel { bottom: calc(max(12px, env(safe-area-inset-bottom)) + 40px + 2 * clamp(52px, 15vh, 80px) + 30px); font-size: 12px; }
+  html.toque #pista-setor { display: none; }
+  html.toque #minimapa { width: clamp(96px, min(20vw, 26vh), 250px); }
+  @media (orientation: portrait) { html.toque .tq-volante { width: calc(100vw - 2 * var(--tq-bt) - 46px); } html.toque #toque { --tq-vol-h: 120px; } }
+  #aviso { position: fixed; inset: 0; display: grid; place-items: center; font-family: var(--titulo); font-size: clamp(32px, 9vw, 80px);
+    color: var(--ficha); text-shadow: 5px 5px 0 var(--zebra); pointer-events: none; }
+
+  #resultado { position: fixed; inset: 0; display: grid; place-items: center; background: color-mix(in srgb, var(--fundo) 80%, transparent);
+    padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+  #resultado .caixa { background: var(--painel); border: 3px solid var(--linha); padding: 20px; width: min(520px, 100%); display: grid; gap: 14px; }
+  #tabela { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+  #tabela li { display: grid; grid-template-columns: 42px 32px 1fr auto auto; gap: 10px; align-items: center; padding: 2px 6px; font-variant-numeric: tabular-nums; }
+  #tabela li.eu { background: var(--painel-alto); outline: 2px solid var(--ficha); }
+  #tabela span { font-family: var(--titulo); font-size: 12px; color: var(--ficha); }
+  #tabela img { height: 32px; image-rendering: pixelated; }
+  #tabela em { color: var(--apagado); font-style: normal; }
+  #tabela time.pista { color: var(--apagado); }
+  #vk-vitorias { margin: 0; color: var(--ficha); font-size: 19px; }
+  .acoes { display: flex; flex-wrap: wrap; gap: 12px; }
+  @media (max-width: 520px) { .lista { grid-template-columns: repeat(2, minmax(0, 1fr)); } #previa { height: 170px; } }
+  /* diálogos: modo de jogo e sala online */
+  .dialogo { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; overflow-y: auto;
+    background: color-mix(in srgb, var(--fundo) 70%, transparent); padding-block: 20px;
+    padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+  .dialogo .caixa { width: min(460px, 100%); display: grid; gap: 12px; background: var(--painel); border: 3px solid var(--linha);
+    padding: 18px; box-shadow: inset 0 4px 0 var(--laranja), 6px 6px 0 rgba(0,0,0,.45); }
+  .dialogo h2 { color: var(--ficha); font-size: 14px; margin: 0 0 4px; }
+  .dialogo .grande { width: 100%; font-size: 13px; }
+  .separa { display: flex; align-items: center; gap: 10px; color: var(--apagado); font-size: 18px; }
+  .separa::before, .separa::after { content: ""; flex: 1; border-top: 2px dashed var(--linha); }
+  .linha-codigo { display: flex; gap: 8px; }
+  .linha-codigo .grande { width: auto; flex: 0 0 auto; padding-inline: 14px; }
+  #codigo { flex: 1; min-width: 0; font-family: var(--titulo); font-size: 18px; letter-spacing: 6px; text-transform: uppercase;
+    background: var(--fundo); color: var(--ficha); border: 3px solid var(--linha); padding: 10px 12px; }
+  #codigo:focus { outline: none; border-color: var(--ficha); }
+  #codigo::placeholder { color: var(--linha); letter-spacing: 2px; font-size: 14px; }
+  #modo-erro { margin: 0; min-height: 22px; color: var(--apagado); font-size: 19px; }
+  .link { background: none; border: 0; color: var(--apagado); font-family: var(--corpo); font-size: 19px; text-decoration: underline; justify-self: start; padding: 4px 0; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .codigo-grande { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--fundo); border: 3px solid var(--ficha); padding: 12px 14px; }
+  #sala-codigo { font-family: var(--titulo); font-size: clamp(22px, 7vw, 32px); letter-spacing: 8px; color: var(--ficha); user-select: all; }
+  .mini { font-family: var(--titulo); font-size: 9px; background: var(--painel-alto); color: var(--texto); border: 2px solid var(--linha); padding: 8px; }
+  .dica { margin: 0; color: var(--apagado); font-size: 18px; line-height: 1.1; }
+  #sala-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+  #sala-lista span.ok { background: #6fd36f; }
+  #sala-lista span.nao { background: var(--linha); color: var(--apagado); }
+  #largar:disabled { cursor: not-allowed; }
+  #sala-lista li { display: grid; grid-template-columns: 34px 1fr auto auto auto; gap: 10px; align-items: center; background: var(--fundo); padding: 4px 8px; border: 2px solid var(--linha); }
+  #sala-lista li.eu { border-color: var(--ficha); }
+  #sala-lista img { height: 32px; image-rendering: pixelated; }
+  #sala-lista b { font-family: var(--titulo); font-size: 10px; }
+  #sala-lista em { color: var(--apagado); font-style: normal; }
+  #sala-lista span { font-family: var(--titulo); font-size: 8px; color: var(--fundo); background: var(--laranja); padding: 3px 5px; }
+  #sala-status { margin: 0; color: var(--texto); font-size: 19px; }
+  #sala { align-items: safe center; }
+  #sala #copiar { min-height: 44px; font-size: 11px; }
+  #compartilhar-sala { min-height: 48px; }
+  #compartilhar-status { margin: 0; color: var(--ficha); font-size: 19px; line-height: 1.2; }
+  #compartilhar-status:empty { display: none; }
+  #convite-manual label { display: block; margin-bottom: 6px; color: var(--apagado); }
+  #convite-texto { display: block; width: 100%; resize: vertical; min-height: 110px; padding: 10px;
+    font: inherit; font-size: 18px; line-height: 1.2; background: var(--fundo); color: var(--texto); border: 2px solid var(--linha); }
+  #convite-texto:focus-visible { outline: 3px solid var(--ficha); outline-offset: 2px; }
+  #tabela li.gente { outline: 2px solid var(--laranja); }
+  button:disabled { opacity: .5; cursor: wait; }
+  .dialogo, .dialogo * { box-sizing: border-box; }
+  #modo-erro:empty { display: none; }
+  .dialogo .caixa { grid-template-columns: minmax(0, 1fr); }
+  #codigo { width: 0; }
+  .modo-btn { margin-left: 0; }
+  .card[data-ocupado] { opacity: .45; }
+  .card[data-trancado] { opacity: .6; }
+  .card[data-trancado] img { filter: brightness(0); opacity: .7; }
+  .card[data-ocupado] small { color: var(--laranja); font-size: 14px; }
+  #pv-info .ocupado { color: var(--laranja); font-weight: normal; }
+  #pv-info .traco { grid-column: 1 / -1; margin-top: 4px; font-family: var(--titulo); font-size: 9px; font-style: normal; color: var(--ficha); line-height: 1.6; }
+  #menu-aviso { margin: 0 0 8px; text-align: center; color: var(--ficha); font-size: 19px; }
+  #sala-lista span.tu { background: var(--ficha); }
+  #sala-novidade { margin: 0; color: var(--ficha); font-size: 19px; }
+  #sala-versao { margin: 0; color: var(--laranja); font-size: 19px; }
+  #sala-status.esperando::after { content: ""; animation: vk-pontos 1.2s steps(1) infinite; }
+  @keyframes vk-pontos { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
+  /* escolha de pista */
+  .pista-atual { display: grid; grid-template-columns: 84px 1fr auto; gap: 12px; align-items: center; width: 100%; padding: 6px 10px 6px 6px;
+    background: var(--fundo); border: 3px solid var(--linha); color: var(--texto); text-align: left; cursor: pointer; }
+  .pista-atual:hover, .pista-atual:focus-visible { border-color: var(--ficha); outline: none; }
+  .pista-atual img { width: 84px; aspect-ratio: 16/9; object-fit: cover; image-rendering: pixelated; display: block; }
+  .pista-atual small { display: block; font-family: var(--titulo); font-size: 8px; color: var(--apagado); margin-bottom: 4px; }
+  .pista-atual b { font-family: var(--titulo); font-size: 12px; color: var(--ficha); }
+  .pista-atual em { font-family: var(--titulo); font-size: 9px; font-style: normal; color: var(--laranja); }
+  #pistas .caixa { width: min(760px, 100%); }
+  .pistas-grade { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .pista-card { position: relative; display: grid; align-content: start; gap: 8px; padding: 0 0 12px; text-align: left; cursor: pointer;
+    background: var(--fundo); border: 3px solid var(--linha); color: var(--texto); box-shadow: 4px 4px 0 rgba(0,0,0,.35); }
+  .pista-card:hover, .pista-card:focus-visible { border-color: var(--laranja); outline: none; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 rgba(0,0,0,.35); }
+  .pista-card[aria-pressed="true"] { border-color: var(--ficha); }
+  .pista-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; image-rendering: pixelated; display: block; border-bottom: 3px solid var(--linha); }
+  .pista-card h3 { margin: 4px 12px 0; font-family: var(--titulo); font-size: 14px; color: var(--ficha); }
+  .pista-card p { margin: 0 12px; font-size: 19px; line-height: 1.25; color: var(--apagado); }
+  .pista-card ul { margin: 0 12px; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+  .pista-card li { font-family: var(--titulo); font-size: 8px; padding: 4px 6px; border: 2px solid var(--linha); color: var(--texto); }
+  .pista-card li.aviso { border-color: var(--laranja); color: var(--laranja); }
+  .pista-card .selo { position: absolute; top: 8px; left: 8px; font-family: var(--titulo); font-size: 8px; padding: 4px 6px; background: var(--ficha); color: var(--fundo); }
+  .pista-card[aria-pressed="false"] .selo { display: none; }
+  #pistas-erro { margin: 0; color: var(--laranja); font-size: 19px; }
+  #troca-pista { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; gap: 16px; align-content: center;
+    background: var(--fundo); animation: vk-surge .25s ease-out; }
+  #troca-pista img { width: min(420px, 80vw); aspect-ratio: 16/9; object-fit: cover; image-rendering: pixelated; border: 3px solid var(--linha); }
+  #troca-pista b { font-family: var(--titulo); font-size: 14px; color: var(--ficha); }
+  #troca-pista b::after { content: ""; animation: vk-pontos 1.2s steps(1) infinite; }
+  @keyframes vk-surge { from { opacity: 0; } }
+  @media (max-width: 600px) { .pistas-grade { grid-template-columns: minmax(0, 1fr); } }
+  [hidden] { display: none !important; }
+  /* Short screens (phone in landscape): windows scroll and centre safely, so no button ends up off-screen. */
+  .dialogo, #resultado { place-items: start center; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+    padding-top: max(12px, env(safe-area-inset-top)); padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+  .dialogo .caixa, #resultado .caixa { margin-block: auto; }
+  #resultado { z-index: 10; }
+  @media (max-height: 520px) {
+    #resultado .caixa { padding: 12px 16px; gap: 8px; width: min(640px, 100%); }
+    #resultado h1 { font-size: 18px; margin: 0; }
+    #tabela { gap: 1px; } #tabela li { padding: 0 6px; } #tabela img { height: 22px; }
+    #resultado .acoes { flex-wrap: nowrap; } #resultado .acoes .grande { flex: 1; font-size: 12px; padding: 10px 12px; }
+    .dialogo .caixa { gap: 8px; padding-top: 12px; padding-bottom: 12px; }
+    #menu { padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
+  }
+</style>
+  <script type="module" crossorigin src="./assets/jogo.js"></script>
+  <link rel="stylesheet" href="./assets/cidreira/picker.css">
+</head>
+<body>
+<canvas id="tela"></canvas>
+<canvas id="linhas" aria-hidden="true"></canvas>
+
+<section id="menu">
+  <div class="miolo">
+    <header class="topo">
+      <h1 class="logo"><img id="logo" alt="Vermes Kart"></h1>
+      <button class="mudo" id="mudo" aria-pressed="true">SOM: LIGADO</button>
+      <button class="mudo modo-btn" id="trocar-modo" aria-pressed="true">MODO: —</button>
+      <button class="mudo modo-btn" id="dificuldade" aria-pressed="true">BOTS: NORMAL</button>
+      <button class="mudo modo-btn" id="trocar-pista" aria-pressed="true">PISTA: —</button>
+      <ol class="passos">
+        <li id="passo1">1 PILOTO</li>
+        <li id="passo2">2 CARRO</li>
+      </ol>
+    </header>
+
+    <div class="escolha">
+      <div class="coluna">
+        <div class="lista" id="lista"></div>
+        <div class="teclas">
+          <section>
+            <h3>NO MENU</h3>
+            <dl>
+              <dt><kbd class="seta">←</kbd><kbd class="seta">↑</kbd><kbd class="seta">↓</kbd><kbd class="seta">→</kbd></dt><dd>escolhe</dd>
+              <dt><kbd>ENTER</kbd></dt><dd>confirma</dd>
+              <dt><kbd>ESC</kbd></dt><dd>volta</dd>
+            </dl>
+          </section>
+          <section>
+            <h3>NA CORRIDA</h3>
+            <dl>
+              <dt><kbd>W</kbd></dt><dd>acelera</dd>
+              <dt><kbd>S</kbd></dt><dd>freia</dd>
+              <dt><kbd>A</kbd><kbd>D</kbd></dt><dd>vira</dd>
+              <dt><kbd>SHIFT</kbd></dt><dd>drift: segura na curva e solta pro turbo</dd>
+              <dt><kbd>ESPAÇO</kbd></dt><dd>usa o item</dd>
+              <dt><kbd>Q</kbd></dt><dd>olha pra trás: segura e usa a tainha pra jogar ela pra trás</dd>
+              <dt><kbd>M</kbd></dt><dd>liga e desliga o som</dd>
+            </dl>
+          </section>
+        </div>
+      </div>
+      <aside class="vitrine">
+        <canvas id="previa" aria-hidden="true"></canvas>
+        <h2 id="pv-nome"></h2>
+        <div id="pv-info"></div>
+      </aside>
+    </div>
+    <p id="menu-aviso" role="status" hidden></p>
+    <div class="rodape-fixo">
+      <button class="grande leve" id="voltar" hidden>◀ VOLTAR</button>
+      <button class="grande" id="avancar"></button>
+    </div>
+  </div>
+</section>
+
+<section id="modo" class="dialogo" hidden aria-labelledby="modo-titulo">
+  <div class="caixa">
+    <h2 id="modo-titulo">COMO VAI CORRER?</h2>
+    <button class="pista-atual" id="modo-pista"><img alt=""><span><small>PISTA</small><b></b></span><em>TROCAR ▸</em></button>
+    <p id="cidreira-mode-note" hidden>Cidreira está disponível no solo com bots. Para correr online, selecione Gravataí.</p>
+    <button class="grande" id="solo">SOZINHO CONTRA OS BOTS</button>
+    <button class="grande leve" id="criar">CRIAR SALA ONLINE</button>
+    <div class="separa"><span>ou entra na sala de alguém</span></div>
+    <div class="linha-codigo">
+      <label for="codigo" class="sr">Código da sala</label>
+      <input id="codigo" maxlength="5" autocomplete="off" spellcheck="false" placeholder="EX: A64QQ" inputmode="text">
+      <button class="grande leve" id="entrar">ENTRAR</button>
+    </div>
+    <p id="modo-erro" role="status"></p>
+    <button class="link" id="modo-voltar">◀ voltar</button>
+  </div>
+</section>
+
+<section id="pistas" class="dialogo" hidden aria-labelledby="pistas-titulo">
+  <div class="caixa">
+    <h2 id="pistas-titulo">ESCOLHE A PISTA</h2>
+    <div class="pistas-grade">
+      <button class="pista-card" data-pista="gravatai" aria-pressed="false">
+        <img src="./cenario/pistas/gravatai.png" alt=""><span class="selo">ESCOLHIDA</span>
+        <h3>Gravataí</h3>
+        <p>Cidade e interior: largada no shopping, Mister, Neópolis e a estrada de Morungava.</p>
+        <ul><li>RETAS RÁPIDAS</li><li>MOTOBOYS</li><li>ATALHO COM PORTEIRA</li><li>SOLO E ONLINE</li></ul>
+      </button>
+      <button class="pista-card" data-pista="cidreira" aria-pressed="false">
+        <img src="./cenario/pistas/cidreira.png" alt=""><span class="selo">ESCOLHIDA</span>
+        <h3>Cidreira</h3>
+        <p>Praia e dunas: centro, orla, plataforma e os Lençóis, com saltos de verdade.</p>
+        <ul><li>SALTOS</li><li>AREIA FOFA</li><li>PATRULHA A CAVALO</li><li>SOLO E ONLINE</li></ul>
+      </button>
+    </div>
+    <p id="pistas-erro" role="alert" hidden></p>
+    <button class="link" id="pistas-voltar">◀ voltar</button>
+  </div>
+</section>
+<div id="troca-pista" hidden><img alt=""><b></b></div>
+
+<section id="sala" class="dialogo" hidden aria-labelledby="sala-titulo">
+  <div class="caixa">
+    <h2 id="sala-titulo">SALA</h2>
+    <div class="codigo-grande"><strong id="sala-codigo"></strong><button class="mini" id="copiar" aria-label="Copiar código da sala">COPIAR</button></div>
+    <button class="grande" id="compartilhar-sala">COMPARTILHAR SALA</button>
+    <p id="compartilhar-status" role="status" aria-live="polite"></p>
+    <div id="convite-manual" hidden>
+      <label for="convite-texto">Convite com código e link</label>
+      <textarea id="convite-texto" rows="4" readonly></textarea>
+    </div>
+    <p class="dica" id="sala-dica"></p>
+    <ul id="sala-lista"></ul>
+    <p id="sala-novidade" hidden></p>
+    <p id="sala-versao" role="alert" hidden></p>
+    <p id="sala-status" role="status"></p>
+    <button class="grande leve" id="trocar-escolha">TROCAR PILOTO OU CARRO</button>
+    <button class="grande" id="pronto" hidden>ESTOU PRONTO ✓</button>
+    <button class="grande" id="largar" hidden>LARGAR ▶</button>
+    <button class="link" id="sair-sala">sair da sala</button>
+  </div>
+</section>
+
+<section id="hud" hidden>
+  <div class="cima"><span id="volta"></span><span id="tempo"></span></div>
+  <canvas id="minimapa" width="160" height="160"></canvas>
+  <div id="pista-setor" role="status" hidden></div>
+  <div id="drift"></div>
+  <div id="item" data-estado="vazio"><div class="caixinha"><img id="item-img" alt=""></div><span id="item-nome"></span></div>
+  <div id="faixa" hidden></div>
+  <div id="pos"></div>
+  <div id="vel"></div>
+</section>
+<div id="aviso" hidden></div>
+
+<section id="resultado" hidden>
+  <div class="caixa">
+    <h1>CHEGADA</h1>
+    <p id="vk-vitorias" hidden></p>
+    <ol id="tabela"></ol>
+    <div class="acoes">
+      <button class="grande" id="denovo">CORRER DE NOVO</button>
+      <button class="grande leve" id="trocar">TROCAR PILOTO</button>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

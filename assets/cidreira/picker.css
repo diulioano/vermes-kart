@@ -1,0 +1,12 @@
+.pista-escolha { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; margin: 0; }
+.pista-escolha label { font-family: var(--titulo); font-size: 11px; color: var(--ficha); }
+.pista-escolha select { max-width: 100%; min-height: 42px; border: 3px solid var(--linha); padding: 8px 32px 8px 10px;
+  color: var(--texto); background: var(--fundo); font-family: var(--corpo); font-size: 21px; cursor: pointer; }
+.pista-escolha select:focus-visible { outline: 3px solid var(--ficha); outline-offset: 3px; }
+.pista-escolha select:hover { border-color: var(--laranja); }
+.pista-escolha select:disabled { opacity: .6; cursor: default; }
+#pista-setor { position: absolute; left: max(16px, env(safe-area-inset-left)); bottom: max(106px, env(safe-area-inset-bottom));
+  font-family: var(--titulo); font-size: clamp(11px, 1.3vw, 12px); color: var(--ficha); max-width: 60vw;
+  line-height: 1.7; text-shadow: 2px 2px 0 var(--fundo); }
+#cidreira-mode-note { margin: 0; color: var(--apagado); font-size: 19px; line-height: 1.4; }
+@media (max-width: 520px) { .pista-escolha { align-items: start; flex-direction: column; } .pista-escolha select { width: 100%; } }

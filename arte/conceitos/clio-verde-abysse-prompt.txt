@@ -1,0 +1,12 @@
+Ferramenta: image_gen integrada, fundo transparente.
+Edição da pintura do Clio para verde Abysse em quinze quadros.
+Fonte: clio-original-sheet.png. Saída: clio-verde-abysse-sheet.png.
+Sprites finais: sprites/carros/clio_*.png.
+Integração: recorte por célula e alpha > 128; vizinho mais próximo;
+dimensões originais preservadas por sprite.
+Originais: .codex/backups/antes-clio-palio-20261104/.
+
+Prompt completo:
+Use case: precise-object-edit. Edit target: attached original Clio sprite sheet. Recolor ONLY all BLUE PAINTED BODY PANELS to Renault Verde Abysse: deep dark metallic forest green with a subtle blue/teal undertone, approximately midtone #214f46, shadows #102b28, highlights #4c7b69. All fifteen sprites must be consistently GREEN, not blue, not turquoise, not lime.
+Preserve the exact existing Clio model, pixel art rendering, dark outlines, proportions, open roof and black seats, mirrors, lamps, tires, alloy wheels and their animation phases. Do not redesign or add features. Body shading should remain crisp and readable at 128px width.
+Keep EXACT sheet layout: 1536x2560, 3 columns and 5 rows of 512x512 cells. Each row is same viewing angle. Rows top to bottom: rear, rear three quarters pointing right, side pointing right, front three quarters pointing right, front. Columns are three wheel animation frames. Keep every sprite in its original position and at the same size. No labels, no other objects, no floor or shadows. Preserve actual transparent alpha background.

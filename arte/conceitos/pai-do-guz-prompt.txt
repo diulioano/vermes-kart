@@ -1,0 +1,12 @@
+Ferramenta: image_gen integrada, fundo transparente.
+Referência de identidade: foto fornecida pelo usuário nesta conversa.
+Referências de estilo: sprites/pilotos/guz_{frente,lado,tras}.png.
+Saída: arte/conceitos/pai-do-guz-sheet.png.
+Sprites finais: sprites/pilotos/pai_do_guz_{frente,lado,tras}.png.
+Recorte por célula e alpha > 128; altura de 64 px; vizinho mais próximo.
+
+Prompt completo:
+Use case: identity-preserve / style-transfer. Create a game pilot sprite sheet for Vermes Kart.
+Image 1 is the PERSON IDENTITY reference: the man called "Pai do Guz" in a black formal suit, white shirt and light pink bow tie, short dark slightly salt-and-pepper hair, receding temples, broad forehead, thick dark eyebrows, clean-shaven, medium light skin, mature face. Preserve these distinctive features in an affectionate faithful caricature, neutral confident expression.
+Images 2,3,4 are EXISTING PILOT SPRITE STYLE references ONLY: dark outlines, chunky crisp pixels, oversized head and tiny upper torso cropped at waist, front/side/back views. Match this game style and proportions; do not copy their hat, long hair or teal shirt.
+Make exactly THREE isolated matching sprites on a transparent landscape 1536x512 canvas with three equal 512x512 cells. First cell: straight FRONT facing viewer. Second cell: exact SIDE profile facing RIGHT. Third cell: straight BACK of head and upper torso. Same character, head size and clothing across all views. Head occupies roughly 75% of character height. Include shoulders and small upper torso showing black suit, white shirt and pink bow tie in front; black suit back in rear. Arms close to torso, no hands needed. No full body, no car, no helmet, no hat, no sunglasses, no text, no labels, no background or ground shadow. Actual transparent alpha. Clean controlled pixel art shading with dark outlines and readable facial likeness at about 48px wide x64px tall. Center each character with generous transparent margin within its cell.
